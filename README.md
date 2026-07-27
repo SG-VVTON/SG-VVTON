@@ -89,7 +89,7 @@ We formulate the VVTON task as a latent-space spatiotemporal conditional generat
   <img width="95%" alt="SG-VVTON Architecture Overview" src="https://github.com/user-attachments/assets/19433514-bc1f-4c51-84d2-47c2c4d405bd" style="border-radius: 8px; margin-top: 15px; margin-bottom: 10px;" />
   <br>
   <p style="width: 85%; text-align: center; color: #555;">
-    <b>Figure 1: Overview of the proposed architecture.</b> Three core modules (<i>Inputs</i>, <i>Preprocessing & Feature Extraction</i>, and <i>Generative AI Synthesis</i>) collaboratively extract multimodal conditioning signals to guide the video diffusion backbone.
+    <b>Figure 1: Overview of the proposed architecture.</b> Three core modules (<i>Inputs</i>, <i>Preprocessing & Feature Extraction</i>, and <i>Generative AI Synthesis</i>) collaboratively extract multimodal conditioning signals to guide the video diffusion backbone[cite: 1].
   </p>
 </div>
 
