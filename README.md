@@ -94,32 +94,6 @@ Qualitative evaluations across unconstrained broadcast and real-world sequences 
 
 ---
 
-## 🏗️ Methodology & Architecture Overview
-
-We formulate the VVTON task as a latent-space spatiotemporal conditional generation problem. Given an input video sequence **`V`**, a target reference garment image **`I_g`**, and an auxiliary textual prompt **`P`**, our framework approximates the conditional distribution:
-
-$$p_\theta(V \mid V_{\text{mask}}, C_{\text{kin}}, B_{\text{face}}, c_v, c_{\text{txt}})$$
-
-### 1. Preprocessing & Feature Extraction Graph
-As illustrated in our pipeline architecture, the input modalities are processed through parallel discriminative branches:
-* **Spatiotemporal Masking of Input Video (`V_mask`):** Binary masks from SAM3 applied to input video frames are dilated, smoothed via a Gaussian filter, and inverted to isolate and remove the subject's original clothing while preserving background and facial identity:
-  $$V_{\text{mask}, t} = V_t \odot M_{\text{cond}, t}$$
-* **Skeletal Rendering (`C_spatiotemporal`):** Skeletal landmarks from ViTPose (extracted from the input video) are rendered as continuous skeleton graphs and concatenated with facial bounding box coordinates and masked video frames:
-  $$C_{\text{spatiotemporal}} = [V_{\text{mask}}, C_{\text{pos}}, B_{\text{face}}]$$
-* **Visual Texture Embedding of Target Image (`c_v`):** A pre-trained CLIP-Vision encoder extracts high-frequency structural features and surface patterns directly from the target reference garment image:
-  $$c_v = E_{\text{CLIP-Vision}}(I_g)$$
-
-### 2. Latent Diffusion & Multi-Modal CFG
-The latent conditioning tensor **`Z_cond`** (derived from encoding **`C_spatiotemporal`** via a VAE) is concatenated with the noisy latent state **`z_tau`** along the channel dimension before entering the **14B-parameter DiT backbone (WAN 2.2)**. 
-
-Denoising is executed via a discrete Euler sampler using a uniform noise schedule. At each timestep $\tau$, the predicted noise $\epsilon_\theta$ is modulated using our novel multi-modal Classifier-Free Guidance (CFG) formulation:
-
-$$\tilde{\epsilon}_\theta(z_\tau, \tau) = \epsilon_\theta(z_\tau, \tau, Z_{\text{cond}}, c_{\text{txt}}^-) + \omega \cdot \Big[ \epsilon_\theta(z_\tau, \tau, Z_{\text{cond}}, c_v, c_{\text{txt}}^+) - \epsilon_\theta(z_\tau, \tau, Z_{\text{cond}}, c_{\text{txt}}^-) \Big]$$
-
-where $\omega \ge 1.0$ is the scaling factor controlling guidance intensity toward the target garment distribution (**`c_v`**), while strictly bound by the physical movement defined by **`Z_cond`**.
-
----
-
 ## 🛠️ Code Release & Setup
 
 > **📢 Announcement:** The full source code, pre-trained checkpoints, and detailed inference instructions are currently undergoing clean-up and internal peer-review. **The repository code will be made publicly available immediately after the paper is accepted.**
